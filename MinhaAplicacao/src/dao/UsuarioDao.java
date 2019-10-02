@@ -47,6 +47,22 @@ public class UsuarioDao {
         } 
           
     }
+    public  ResultSet selecionaUsuarios(String pesquisa){
+          String sql ="select * from usuario where nome like'%"+ pesquisa +"%'";
+          
+         try { 
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.execute();
+            
+            ResultSet rs = stmt.executeQuery();
+            
+           return rs;
+        } 
+        catch (SQLException u) { 
+            throw new RuntimeException(u);
+        } 
+          
+    }
     public void DeletaUsuario(int id){
     
             String sql = "DELETE FROM usuario where id = "+ id +" ";    
@@ -63,6 +79,26 @@ public class UsuarioDao {
     }
     public ResultSet LimparCampos(){
         return null;
+    }
+    
+    public void EditarUsuario(Usuario usuario){
+        
+        
+         String sql = "update usuario set nome=? ,cpf=?,email=?,telefone=? where id="+ usuario.getId() +"  ";
+        try { 
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, usuario.getNome());
+            stmt.setString(2, usuario.getCpf());
+            stmt.setString(3, usuario.getEmail());
+            stmt.setString(4, usuario.getTelefone());
+            stmt.execute();
+            stmt.close();
+        } 
+        catch (SQLException u) { 
+            throw new RuntimeException(u);
+        } 
+    
+    
     }
     
 }

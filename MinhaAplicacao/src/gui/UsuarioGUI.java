@@ -75,6 +75,23 @@ public class UsuarioGUI extends javax.swing.JFrame {
         } 
         
     }
+    public void PopulaTable(String pesquisa){
+        
+         ResultSet rs = usDao.selecionaUsuarios(pesquisa);
+        
+        DefaultTableModel model = (DefaultTableModel) jUsuario.getModel();
+            model.setNumRows(0);
+        try {
+            while(rs.next()){
+                String[] linha = {rs.getString("ID").toString(), rs.getString("Nome"),
+                    rs.getString("Cpf"),rs.getString("Email"),rs.getString("Telefone") };
+                model.addRow(linha);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(UsuarioGUI.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -222,6 +239,11 @@ public class UsuarioGUI extends javax.swing.JFrame {
         });
 
         btEditar.setText("Editar");
+        btEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btEditarActionPerformed(evt);
+            }
+        });
 
         txtPesquisar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -275,15 +297,7 @@ public class UsuarioGUI extends javax.swing.JFrame {
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(59, 59, 59)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel7)
-                                            .addComponent(jLabel3))
-                                        .addGap(23, 23, 23)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel5)
@@ -291,7 +305,15 @@ public class UsuarioGUI extends javax.swing.JFrame {
                                         .addGap(26, 26, 26)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                            .addComponent(txtEmail)))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel7)
+                                            .addComponent(jLabel3))
+                                        .addGap(23, 23, 23)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                         .addGap(12, 12, 12)))
                 .addContainerGap())
         );
@@ -333,16 +355,15 @@ public class UsuarioGUI extends javax.swing.JFrame {
                             .addComponent(btEditar)
                             .addComponent(btPesquisar)
                             .addComponent(txtPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel8))
-                        .addGap(18, 18, 18))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jLabel8)))
+                    .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btCadastrar)
-                            .addComponent(btLimpar))
-                        .addGap(65, 65, 65)))
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                            .addComponent(btLimpar))))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btSair)
                 .addGap(26, 26, 26))
         );
@@ -406,8 +427,13 @@ public class UsuarioGUI extends javax.swing.JFrame {
 
     private void btPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPesquisarActionPerformed
         // TODO add your handling code here:
-        
+        if (txtPesquisar.getText().isEmpty()){
            this.PopulaTable();
+        }else{
+        
+             this.PopulaTable(txtPesquisar.getText());
+        
+        }
         
         
         
@@ -459,6 +485,25 @@ public class UsuarioGUI extends javax.swing.JFrame {
     private void txtPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPesquisarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPesquisarActionPerformed
+
+    private void btEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditarActionPerformed
+        // TODO add your handling code here:
+        if(!"".equals(txtId.getText())){
+            usuarios.setNome(txtNome.getText());
+            usuarios.setCpf(txtCpf.getText());
+            usuarios.setEmail(txtEmail.getText());
+            usuarios.setTelefone(txtTelefone.getText());
+            usuarios.setId(Integer.parseInt(txtId.getText()));
+            usDao.EditarUsuario(usuarios);
+            
+            JOptionPane.showMessageDialog(null, " Alteração do usuário  Código: " + txtId.getText());
+            this.PopulaTable();
+        }else{
+                  JOptionPane.showMessageDialog(null, " Selecione um usuário ");
+        }
+        
+        
+    }//GEN-LAST:event_btEditarActionPerformed
 
     /**
      * @param args the command line arguments

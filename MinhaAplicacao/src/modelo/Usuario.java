@@ -16,6 +16,15 @@ public class Usuario {
     String email;
     String telefone;
     
+    public int getId(){
+        
+        return (int) this.id;
+    }
+    public void  setId(int id){
+    
+        this.id =  id;
+    }
+    
     public String getCpf(){
        
         return this.cpf;
